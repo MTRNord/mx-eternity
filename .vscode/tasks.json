@@ -1,0 +1,58 @@
+{
+	"version": "2.0.0",
+	"tasks": [
+		{
+			"type": "cargo",
+			"subcommand": "build",
+			"problemMatcher": [
+				"$rustc"
+			],
+			"group": {
+				"kind": "build",
+				"isDefault": true
+			},
+			"label": "Rust: cargo build - eternity",
+			"options": {
+				"cwd": "${workspaceFolder}/eternity"
+			}
+		},
+		{
+			"label": "Rust: cargo build - eternity - no encryption",
+			"type": "shell",
+			"command": "cargo build --no-default-features",
+			"windows": {
+				"command": "cargo build --no-default-features"
+			},
+			"options": {
+				"cwd": "${workspaceFolder}/eternity"
+			}
+		},
+		{
+			"type": "cargo",
+			"subcommand": "test",
+			"problemMatcher": [
+				"$rustc"
+			],
+			"group": {
+				"kind": "test",
+				"isDefault": true
+			},
+			"label": "Rust: cargo test - eternity",
+			"options": {
+				"cwd": "${workspaceFolder}/eternity"
+			}
+		},
+		{
+			"label": "Rust: cargo clippy - eternity",
+			"type": "shell",
+			"command": "cargo clippy --no-default-features",
+			"windows": {
+				"command": "cargo clippy --no-default-features"
+			},
+			"options": {
+				"cwd": "${workspaceFolder}/eternity"
+			},
+			"problemMatcher": []
+		}
+	]
+}
