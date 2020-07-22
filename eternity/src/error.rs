@@ -20,6 +20,8 @@ pub enum EternityError {
     LogError(#[from] log::SetLoggerError),
     #[error(transparent)]
     WasmerResolveError(#[from] wasmer_runtime::error::ResolveError),
+    #[error(transparent)]
+    WasmerRuntimeError(#[from] wasmer_runtime_core::error::RuntimeError),
     #[error("unknown Eternity error")]
     Unknown,
 }

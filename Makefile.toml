@@ -1,6 +1,10 @@
 [env]
 CARGO_MAKE_EXTEND_WORKSPACE_MAKEFILE = "true"
 
+[tasks.fmt]
+command = "cargo"
+args = ["fmt"]
+
 [tasks.clean]
 command = "cargo"
 args = ["clean"]
@@ -8,33 +12,39 @@ args = ["clean"]
 [tasks.build-clean]
 command = "cargo"
 args = ["build"]
-dependencies = ["clean"]
+dependencies = ["fmt", "clean"]
 
 [tasks.build-clean-no-encryption]
 command = "cargo"
 args = ["build", "--no-default-features"]
-dependencies = ["clean"]
+dependencies = ["fmt", "clean"]
 
 [tasks.build]
 command = "cargo"
 args = ["build"]
+dependencies = ["fmt"]
 
 [tasks.build-no-encryption]
 command = "cargo"
 args = ["build", "--no-default-features"]
+dependencies = ["fmt"]
 
 [tasks.run]
 command = "cargo"
 args = ["run"]
+dependencies = ["fmt"]
 
 [tasks.run-no-encryption]
 command = "cargo"
 args = ["run", "--no-default-features"]
+dependencies = ["fmt"]
 
 [tasks.clippy]
 command = "cargo"
 args = ["clippy"]
+dependencies = ["fmt"]
 
 [tasks.clippy-no-encryption]
 command = "cargo"
 args = ["clippy", "--no-default-features"]
+dependencies = ["fmt"]

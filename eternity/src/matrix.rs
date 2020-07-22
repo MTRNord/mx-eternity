@@ -1,5 +1,7 @@
+use crate::config::Config;
 use crate::error::Result;
 use crate::PLUGINS;
+use log::*;
 use matrix_sdk::{
     self,
     events::{
@@ -11,11 +13,11 @@ use matrix_sdk::{
 };
 use matrix_sdk_common_macros::async_trait;
 use std::convert::TryFrom;
-use std::path::Path;
 use url::Url;
 
 pub struct EventCallback {
     client: Client,
+    config: Config,
 }
 
 #[async_trait]
@@ -30,38 +32,39 @@ impl EventEmitter for EventCallback {
             {
                 // TODO actual logic
                 if sender.localpart() == "mtrnord" && msg_body.contains("!gitlab_test") {
-                    PLUGINS
-                        .lock()
-                        .expect("Could not lock mutex")
-                        .call("gitlab_print_username");
-                    //let result = self.plugins.call("gitlab_print_username", &[""]).unwrap();
-                    //let room_locked = room.read().await;
-                    //self.client.room_send(&room_locked.room_id, result, None).await.unwrap();
+                    let plugins = PLUGINS.lock().await;
+                    let call_result = plugins.call("gitlab_print_username");
+                    match call_result {
+                        Err(e) => error!("{:?}", e),
+                        Ok(msg) => {
+                            let room_locked = room.read().await;
+                            self.client
+                                .room_send(&room_locked.room_id, msg.clone(), None)
+                                .await
+                                .unwrap();
+                        }
+                    }
                 }
             }
         }
     }
 }
 
-pub async fn login<P: AsRef<Path>>(
-    homeserver_url: String,
-    username: String,
-    access_token: String,
-    store_path: P,
-) -> Result<()> {
-    let client_config = ClientConfig::new().store_path(store_path);
-    let homeserver_url = Url::parse(&homeserver_url)?;
+pub async fn login(config: Config) -> Result<()> {
+    let client_config = ClientConfig::new().store_path(config.matrix.store_path.clone());
+    let homeserver_url = Url::parse(&config.matrix.homeserver_url)?;
     let mut client = Client::new_with_config(homeserver_url, client_config)?;
 
     client
         .add_event_emitter(Box::new(EventCallback {
             client: client.clone(),
+            config: config.clone(),
         }))
         .await;
 
     let session = Session {
-        access_token,
-        user_id: UserId::try_from(username)?,
+        access_token: config.matrix.access_token,
+        user_id: UserId::try_from(config.matrix.username)?,
         device_id: "mx-gitlab".to_string(),
     };
     client.restore_login(session).await?;
