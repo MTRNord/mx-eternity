@@ -1,0 +1,13 @@
+[package]
+name = "test-plugin"
+version = "0.1.0"
+authors = ["MTRNord <mtrnord1@gmail.com>"]
+edition = "2018"
+
+[lib]
+crate-type = ["cdylib"]
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+log = "0.4.11"

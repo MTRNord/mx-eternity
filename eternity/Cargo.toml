@@ -14,8 +14,8 @@ anyhow = "1.0.31"
 log = "0.4.11"
 fern = "0.6.0"
 chrono = "0.4.13"
-matrix-sdk = { version = "0.1.0", git = "https://github.com/matrix-org/matrix-rust-sdk", default-features = false, features = ["messages"]}# features = ["encryption"]}
-matrix-sdk-common-macros = { version = "0.1.0", git = "https://github.com/matrix-org/matrix-rust-sdk"}
+matrix-sdk = { version = "0.1.0", git = "https://github.com/jplatte/matrix-rust-sdk", default-features = false, features = ["messages"], rev = "77581d3fb20c9172857c9759be95da2b1ad5d970"}# features = ["encryption"]}
+matrix-sdk-common-macros = { version = "0.1.0", git = "https://github.com/jplatte/matrix-rust-sdk", rev = "77581d3fb20c9172857c9759be95da2b1ad5d970"}
 async-trait = "0.1"
 url = "2.1.1"
 serde = "1.0.114"
@@ -23,8 +23,9 @@ serde_yaml = "0.8.13"
 thiserror = "1.0.20"
 wasmer-runtime-core = "0.17.1"
 lazy_static = "1.4.0"
+serde_json = "1.0.57"
 
 
 [features]
-default = ["encryption"]
+#default = ["encryption"]
 encryption = ["matrix-sdk/encryption"]

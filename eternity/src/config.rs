@@ -1,5 +1,4 @@
-use std::fs;
-use std::path::Path;
+use std::{fs, path::Path};
 
 use crate::error::Result;
 use serde::{Deserialize, Serialize};
@@ -13,15 +12,8 @@ pub struct Matrix {
 }
 
 #[derive(Debug, PartialEq, Serialize, Deserialize, Clone)]
-pub struct Gitlab {
-    pub gitlab_url: String,
-    pub access_token: String,
-}
-
-#[derive(Debug, PartialEq, Serialize, Deserialize, Clone)]
 pub struct Config {
     pub matrix: Matrix,
-    pub gitlab: Option<Gitlab>,
     pub plugins_path: String,
 }
 

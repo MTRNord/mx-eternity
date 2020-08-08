@@ -1,6 +1,4 @@
-use crate::config::Config;
-use crate::matrix::login;
-use crate::wasm_plugins::Plugins;
+use crate::{config::Config, matrix::login, wasm_plugins::Plugins};
 use clap::Clap;
 use lazy_static::lazy_static;
 use std::sync::Arc;
@@ -17,9 +15,9 @@ struct Opts {
     /// Sets a custom config file. Could have been an Option<T> with no default too
     #[clap(short, long, default_value = "config.yaml")]
     config: String,
-    /// A level of verbosity, and can be used multiple times
-    #[clap(short, long, parse(from_occurrences))]
-    verbose: i32,
+    // /// A level of verbosity, and can be used multiple times
+    //#[clap(short, long, parse(from_occurrences))]
+    //verbose: i32,
 }
 
 lazy_static! {
@@ -71,6 +69,7 @@ fn setup_logger() -> crate::error::Result<()> {
         .level_for("reqwest", log::LevelFilter::Off)
         .level_for("matrix_sdk_base", log::LevelFilter::Off)
         .level_for("tracing", log::LevelFilter::Off)
+        .level_for("cranelift_codegen", log::LevelFilter::Off)
         .chain(std::io::stdout())
         .chain(fern::log_file("output.log")?)
         .apply()?;
