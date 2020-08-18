@@ -24,6 +24,7 @@ thiserror = "1.0.20"
 wasmer-runtime-core = "0.17.1"
 lazy_static = "1.4.0"
 serde_json = "1.0.57"
+semver = "0.10.0"
 
 
 [features]

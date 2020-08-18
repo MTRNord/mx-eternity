@@ -11,6 +11,8 @@ pub enum EternityError {
     #[error(transparent)]
     YamlError(#[from] serde_yaml::Error),
     #[error(transparent)]
+    JsonError(#[from] serde_json::Error),
+    #[error(transparent)]
     URLError(#[from] url::ParseError),
     #[error(transparent)]
     MatrixSDKError(#[from] matrix_sdk::Error),
@@ -22,6 +24,8 @@ pub enum EternityError {
     WasmerResolveError(#[from] wasmer_runtime::error::ResolveError),
     #[error(transparent)]
     WasmerRuntimeError(#[from] wasmer_runtime_core::error::RuntimeError),
+    #[error(transparent)]
+    SemverVersionError(#[from] semver::SemVerError),
     #[error("unknown Eternity error")]
     Unknown,
 }

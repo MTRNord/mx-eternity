@@ -39,10 +39,20 @@ async fn main() -> crate::error::Result<()> {
     for path in paths {
         let safe_path = path?;
         if safe_path.file_name().to_str().unwrap().ends_with("wasm") {
-            println!("loading: {:?}", safe_path.path());
+            let mut safe_config_path = safe_path.path().clone();
+            safe_config_path.set_extension("json");
+            println!(
+                "loading: {:?} with config: {:?}",
+                safe_path.path(),
+                safe_config_path.clone()
+            );
             let mut state = PLUGINS.lock().await;
-            state.load(safe_path.path())?;
-            println!("loaded: {:?}", safe_path.path());
+            state.load(safe_path.path(), safe_config_path.clone())?;
+            println!(
+                "loaded: {:?} with config: {:?}",
+                safe_path.path(),
+                safe_config_path
+            );
         }
     }
 
