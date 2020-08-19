@@ -1,4 +1,4 @@
-#![no_main]
+#[allow(dead_code)]
 
 // Define the functions from the framework which allow access to sending messages
 extern "C" {
@@ -7,6 +7,22 @@ extern "C" {
         content_len: usize,
         room_id_ptr: *const u8,
         room_id_len: usize,
+    );
+    fn println(
+        text_ptr: *const u8,
+        text_len: usize,
+    );
+    fn info(
+        text_ptr: *const u8,
+        text_len: usize,
+    );
+    fn warn(
+        text_ptr: *const u8,
+        text_len: usize,
+    );
+    fn error(
+        text_ptr: *const u8,
+        text_len: usize,
     );
 }
 

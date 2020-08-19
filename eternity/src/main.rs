@@ -8,6 +8,7 @@ mod config;
 mod error;
 mod matrix;
 mod wasm_plugins;
+mod utils;
 
 #[derive(Clap)]
 #[clap(version = "1.0", author = "MTRNord <info@nordgedanken.de>")]

@@ -6,7 +6,7 @@ use matrix_sdk::{
 use std::{collections::HashMap, convert::TryFrom, path::Path, str};
 use wasmer_runtime::{func, imports, instantiate, Ctx, Func, Instance};
 
-use crate::PLUGINS;
+use crate::{PLUGINS, utils::pointer_to_str};
 use log::*;
 use serde::{Deserialize, Serialize};
 
@@ -37,9 +37,7 @@ struct EventContentDummy {
     pub body: String,
 }
 
-// Let's define our "send_message" function.
-//
-// The declaration must start with "extern" or "extern "C"".
+/// Function that provides a way of sending matrix messages from plugins
 fn send_message(
     ctx: &mut Ctx,
     content_ptr: u32,
@@ -108,6 +106,58 @@ fn send_message(
     });
 }
 
+/// Function that prints the log
+fn println(ctx: &mut Ctx, text_ptr: u32, text_len: u32) {
+    // Get a slice that maps to the memory currently used by the webassembly
+    // instance.
+    //
+    // Webassembly only supports a single memory for now,
+    // but in the near future, it'll support multiple.
+    //
+    // Therefore, we don't assume you always just want to access first
+    // memory and force you to specify the first memory.
+    let memory = ctx.memory(0);
+
+    // Get a subslice that corresponds to the memory used by the string.
+    let text_str_vec: Vec<_> = memory.view()[text_ptr as usize..(text_ptr + text_len) as usize]
+        .iter()
+        .map(|cell| cell.get())
+        .collect();
+
+    // Convert the subslice to a `&str`.
+    let text_str = str::from_utf8(&text_str_vec).unwrap();
+    info!("{}", text_str);
+}
+
+/// Function that prints the log
+fn error(ctx: &mut Ctx, text_ptr: u32, text_len: u32) {
+    // Get a slice that maps to the memory currently used by the webassembly
+    // instance.
+    //
+    // Webassembly only supports a single memory for now,
+    // but in the near future, it'll support multiple.
+    //
+    // Therefore, we don't assume you always just want to access first
+    // memory and force you to specify the first memory.
+    let memory = ctx.memory(0);
+
+    // Get a subslice that corresponds to the memory used by the string.
+    let text_str_vec: Vec<_> = memory.view()[text_ptr as usize..(text_ptr + text_len) as usize]
+        .iter()
+        .map(|cell| cell.get())
+        .collect();
+
+    // Convert the subslice to a `&str`.
+    let text_str = str::from_utf8(&text_str_vec).unwrap();
+    error!("{}", text_str);
+}
+
+/// Function that prints the log
+fn warn(ctx: &mut Ctx, text_ptr: u32, text_len: u32) {
+    let text_str = pointer_to_str(ctx, text_ptr, text_len);
+    warn!("{}", text_str);
+}
+
 impl Plugins {
     pub fn new() -> Self {
         Self::default()
@@ -135,6 +185,10 @@ impl Plugins {
             "env" => {
                 // name        // the func! macro autodetects the signature
                 "send_message" => func!(send_message),
+                "println" => func!(println),
+                "info" => func!(println),
+                "warn" => func!(warn),
+                "error" => func!(error),
             },
         };
 
